@@ -1,28 +1,16 @@
 advent_of_code::solution!(2);
 
 pub fn part_one(input: &str) -> Option<u32> {
-    let reports: Vec<Vec<i32>> = input
+    let valid_reports_count = input
         .lines()
         .map(|line| {
             line.split_whitespace()
                 .map(|s| s.parse().unwrap())
                 .collect()
         })
-        .collect();
-    let diff_reports: Vec<Vec<i32>> = reports
-        .into_iter()
-        .map(|report| report.windows(2).map(|w| w[1] - w[0]).collect())
-        .collect();
-    let valid_reports: Vec<Vec<i32>> = diff_reports.into_iter().filter_map(|report| {
-        let value_range_valid = report.iter().all(|&x| (1..=3).contains(&x.abs()));
-        let same_sign_valid = report.iter().all(|&x| x.signum() == report[0].signum());
-        if value_range_valid && same_sign_valid {
-            Some(report)
-        } else {
-            None
-        }
-    }).collect();
-    Some(valid_reports.len() as u32)
+        .filter(|report: &Vec<i32>| is_valid_report(report))
+        .count() as u32;
+    Some(valid_reports_count)
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
